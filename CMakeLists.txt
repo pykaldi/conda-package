@@ -81,9 +81,14 @@ function(add_pyclif_library name pyclif_file)
 
   # PYCLIF configuration
   string(REPLACE ".clif" "" pyclif_file_basename ${pyclif_file})
-  set(gen_cc "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.cc")
-  set(gen_h "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.h")
-  set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap-init.cc")
+  # set(gen_cc "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.cc")
+  # set(gen_h "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.h")
+  # set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap-init.cc")
+
+  set(gen_cc "${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file_basename}-clifwrap.cc")
+  set(gen_h "${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file_basename}-clifwrap.h")
+  set(gen_init "${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file_basename}-clifwrap-init.cc")
+  
   string(REPLACE "-" "_" module_name ${name})
 
   if(PYTHON_VERSION_MAJOR EQUAL 3)
@@ -135,7 +140,7 @@ function(add_pyclif_library name pyclif_file)
   # PYCLIFDEP flag adds a dependency on ${module_name}_pyclif target
   add_CC_library(${module_name}
                  "${gen_cc};${gen_init}"
-                 PYCLIFDEP
+                 # PYCLIFDEP
                  RPATH ${PYCLIF_LIBRARY_RPATH}
                  CLIF_DEPS ${PYCLIF_LIBRARY_CLIF_DEPS}
                  LIBRARIES ${PYCLIF_LIBRARY_LIBRARIES})
@@ -258,4 +263,3 @@ add_CC_library(${CLIF_LIBRARY}
 ####################################################################################################
 
 add_subdirectory("kaldi")
-add_subdirectory("docs")

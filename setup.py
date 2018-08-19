@@ -28,9 +28,48 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
 
 CUDA = False
+KALDI_TFRNNLM = False
+
 CLIF_LIB_DIR = os.path.join(CWD, "clif/python")
 LIB_DIR = os.path.join(CWD, 'libs')
 LIBS = [f.replace("lib","").replace(".so", "") for f in os.listdir(LIB_DIR)] #Remove lib and extension
+
+
+KALDI_MK_PATH = os.path.join(CWD, "kaldi.mk")
+if not os.path.isfile(KALDI_MK_PATH):
+  print("\nCould not find kaldi.mk\n", file=sys.stderr)
+  sys.exit(1)
+
+with open("Makefile", "w") as makefile:
+    print("include {}".format(KALDI_MK_PATH), file=makefile)
+    print("print-% : ; @echo $($*)", file=makefile)
+CXX_FLAGS = check_output(['make', 'print-CXXFLAGS'])
+LD_FLAGS = check_output(['make', 'print-LDFLAGS'])
+LD_LIBS = check_output(['make', 'print-LDLIBS'])
+CUDA = check_output(['make', 'print-CUDA']).upper() == 'TRUE'
+if CUDA:
+    CUDA_LD_FLAGS = check_output(['make', 'print-CUDA_LDFLAGS'])
+    CUDA_LD_LIBS = check_output(['make', 'print-CUDA_LDLIBS'])
+subprocess.check_call(["rm", "Makefile"])
+
+TFRNNLM_LIB_PATH = os.path.join(CWD, "libs",
+                                "libkaldi-tensorflow-rnnlm.so")
+KALDI_TFRNNLM = True if os.path.exists(TFRNNLM_LIB_PATH) else False
+if KALDI_TFRNNLM:
+    with open("Makefile", "w") as makefile:
+        TF_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow")
+        print("TENSORFLOW = {}".format(TF_DIR), file=makefile)
+        TFRNNLM_MK_PATH = os.path.join(KALDI_DIR, "src", "tfrnnlm",
+                                       "Makefile")
+        for line in open(TFRNNLM_MK_PATH):
+            if line.startswith("include") or line.startswith("TENSORFLOW"):
+                continue
+            print(line, file=makefile, end='')
+        print("print-% : ; @echo $($*)", file=makefile)
+    TFRNNLM_CXX_FLAGS = check_output(['make', 'print-EXTRA_CXXFLAGS'])
+    TF_LIB_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow",
+                              "bazel-bin", "tensorflow")
+    subprocess.check_call(["rm", "Makefile"])
 
 MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS')
 if not MAKE_NUM_JOBS:
@@ -55,19 +94,20 @@ except ImportError:
     if DEBUG:
         MAKE_ARGS += ['-d']
 
+
 if DEBUG:
     print("#"*50)
     print("CWD:", CWD)
-    print("PYCLIF:", PYCLIF)
     print("CXX_FLAGS:", CXX_FLAGS)
     print("LD_FLAGS:", LD_FLAGS)
+    print("LD_LIBS:", LD_LIBS)
     print("BUILD_DIR:", BUILD_DIR)
+    print("CUDA:", CUDA)
     if CUDA:
         print("CUDA_LD_FLAGS:", CUDA_LD_FLAGS)
         print("CUDA_LD_LIBS:", CUDA_LD_LIBS)
     print("MAKE:", MAKE, *MAKE_ARGS)
     print("#"*50)
-
 ################################################################################
 # Use CMake to build Python extensions in parallel
 ################################################################################
@@ -110,17 +150,14 @@ class build_ext(setuptools.command.build_ext.build_ext):
         old_inplace, self.inplace = self.inplace, 0
 
         import numpy as np
-        CMAKE_ARGS = ['-DKALDI_DIR=' + KALDI_DIR,
-                      '-DPYCLIF=' + PYCLIF,
-                      '-DCLIF_MATCHER=' + CLIF_MATCHER,
-                      '-DCXX_FLAGS=' + CXX_FLAGS,
-                      '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
+        CMAKE_ARGS = ['-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DLD_FLAGS=' + LD_FLAGS,
                       '-DLD_LIBS=' + LD_LIBS,
                       '-DNUMPY_INC_DIR='+ np.get_include(),
                       '-DCUDA=TRUE' if CUDA else '-DCUDA=FALSE',
                       '-DTFRNNLM=TRUE' if KALDI_TFRNNLM else '-DTFRNNLM=FALSE',
                       '-DDEBUG=TRUE' if DEBUG else '-DDEBUG=FALSE']
+
 
         if CUDA:
             CMAKE_ARGS +=['-DCUDA_LD_FLAGS=' + CUDA_LD_FLAGS,
@@ -193,9 +230,7 @@ setup(name = 'pykaldi',
       cmdclass = {
           'build': build,
           'build_ext': build_ext,
-          'build_sphinx': build_sphinx,
           'install_lib': install_lib,
-          'test_cuda': test_cuda,
           },
       packages = packages,
       package_data = {},
