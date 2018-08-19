@@ -27,8 +27,6 @@ DEBUG = os.getenv('DEBUG', 'NO').upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
 
-CUDA = False
-KALDI_TFRNNLM = False
 
 CLIF_LIB_DIR = os.path.join(CWD, "clif/python")
 LIB_DIR = os.path.join(CWD, 'libs')
@@ -46,7 +44,11 @@ with open("Makefile", "w") as makefile:
 CXX_FLAGS = check_output(['make', 'print-CXXFLAGS'])
 LD_FLAGS = check_output(['make', 'print-LDFLAGS'])
 LD_LIBS = check_output(['make', 'print-LDLIBS'])
-CUDA = check_output(['make', 'print-CUDA']).upper() == 'TRUE'
+
+
+# TODO (VM): Support CUDA
+CUDA = False
+# CUDA = check_output(['make', 'print-CUDA']).upper() == 'TRUE'
 if CUDA:
     CUDA_LD_FLAGS = check_output(['make', 'print-CUDA_LDFLAGS'])
     CUDA_LD_LIBS = check_output(['make', 'print-CUDA_LDLIBS'])

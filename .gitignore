@@ -3,4 +3,5 @@ kaldi.mk*
 build/
 dist/
 *-egg*/
-
+.eggs/
+pykaldi.egg-info/
