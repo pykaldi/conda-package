@@ -25,3 +25,22 @@ $ git clone https://github.com/pykaldi/conda-package
 $ cd conda-package
 $ conda-build pykaldi
 ```
+
+Not so easy way
+---------------
+1. Create a conda environment
+```
+conda create -n pykaldipkg python=3.5
+conda activate pykaldipkg
+```
+
+2. Install conda-build
+```
+conda install conda-build
+```
+
+3. Build the package
+```
+conda-build pykaldi
+```
+
