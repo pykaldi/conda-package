@@ -23,9 +23,9 @@ def check_output(*args, **kwargs):
 ################################################################################
 
 DEBUG = os.getenv('DEBUG', 'NO').upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
-
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
+PREFIX = os.getenv("PREFIX")
 
 
 CLIF_LIB_DIR = os.path.join(CWD, "clif/python")
@@ -73,7 +73,8 @@ if KALDI_TFRNNLM:
                               "bazel-bin", "tensorflow")
     subprocess.check_call(["rm", "Makefile"])
 
-MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS')
+# MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS')
+MAKE_NUM_JOBS = "1"
 if not MAKE_NUM_JOBS:
     # This is the logic ninja uses to guess the number of parallel jobs.
     NPROC = int(check_output(['getconf', '_NPROCESSORS_ONLN']))
@@ -100,6 +101,7 @@ except ImportError:
 if DEBUG:
     print("#"*50)
     print("CWD:", CWD)
+    print("PREFIX:", PREFIX)
     print("CXX_FLAGS:", CXX_FLAGS)
     print("LD_FLAGS:", LD_FLAGS)
     print("LD_LIBS:", LD_LIBS)
@@ -152,7 +154,13 @@ class build_ext(setuptools.command.build_ext.build_ext):
         old_inplace, self.inplace = self.inplace, 0
 
         import numpy as np
-        CMAKE_ARGS = ['-DCXX_FLAGS=' + CXX_FLAGS,
+        CMAKE_ARGS = [
+                      # # Make sure to use anaconda-provided gcc binary
+                      # '-DCMAKE_C_COMPILER={}/bin/gcc'.format(PREFIX),
+                      # '-DCMAKE_CXX_COMPILER={}/bin/g++'.format(PREFIX),
+                      '-DCMAKE_INSTALL_PREFIX={}'.format(PREFIX), 
+                      
+                      '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DLD_FLAGS=' + LD_FLAGS,
                       '-DLD_LIBS=' + LD_LIBS,
                       '-DNUMPY_INC_DIR='+ np.get_include(),

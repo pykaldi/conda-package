@@ -1,0 +1,19 @@
+package:
+  name: pykaldi
+  version: "0.0.9"
+
+source:
+  path: ../pykaldi
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+  host:
+    - numpy x.x
+    - pip
+    - python >=3.5
+    - zlib
+    - setuptools
+    - pytest-runner
