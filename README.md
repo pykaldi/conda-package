@@ -44,3 +44,11 @@ conda install conda-build
 conda-build pykaldi
 ```
 
+On success, this will create a .tar.bz2 file in the environment folder (e.g., /home/victor/miniconda3/envs/pykaldipkg/conda-bld/linux-64/pykaldi-0.0.9-hf484d3e_0.tar.bz2). Take note of the location of this file.
+
+4. Install pykaldi conda package
+```
+conda install [tar.bz2 file]
+```
+
+5. (Opt) Test it
