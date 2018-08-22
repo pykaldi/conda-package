@@ -25,11 +25,12 @@ def check_output(*args, **kwargs):
 DEBUG = os.getenv('DEBUG', 'NO').upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
+
 PREFIX = os.getenv("PREFIX")
+LIB_DIR = os.path.join(PREFIX, 'lib')
 
 
 CLIF_LIB_DIR = os.path.join(CWD, "clif/python")
-LIB_DIR = os.path.join(CWD, 'libs')
 LIBS = [f.replace("lib","").replace(".so", "") for f in os.listdir(LIB_DIR)] #Remove lib and extension
 
 
@@ -158,8 +159,14 @@ class build_ext(setuptools.command.build_ext.build_ext):
                       # # Make sure to use anaconda-provided gcc binary
                       # '-DCMAKE_C_COMPILER={}/bin/gcc'.format(PREFIX),
                       # '-DCMAKE_CXX_COMPILER={}/bin/g++'.format(PREFIX),
-                      '-DCMAKE_INSTALL_PREFIX={}'.format(PREFIX), 
-                      
+                      '-DCMAKE_INSTALL_PREFIX=' + PREFIX, 
+                    
+                      # Note (VM):
+                      # Conda build will replace rpaths
+                      # Make sure rpath is pointed relatively
+                      '-DKALDI_LIBRARIES_DIR=' + LIB_DIR,
+                      '-DOPENFST_LIB_DIR=' + LIB_DIR,
+
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DLD_FLAGS=' + LD_FLAGS,
                       '-DLD_LIBS=' + LD_LIBS,

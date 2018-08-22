@@ -21,9 +21,17 @@ if(NOT NUMPY_INC_DIR)
   message(FATAL_ERROR "You need to specify Numpy include directory. Set -DNUMPY_INC_DIR option.")
 endif(NOT NUMPY_INC_DIR)
 
+# Find Kaldi/Openfst libs 
+if(NOT KALDI_LIBRARIES_DIR)
+  message(FATAL_ERROR "You need to specify Kaldi libs directory. Set -DKALDI_LIBRARIES_DIR option.")
+endif(NOT KALDI_LIBRARIES_DIR)
 
-set(KALDI_LIBRARIES_DIR "${CMAKE_SOURCE_DIR}/libs")
-set(OPENFST_LIB_DIR "${CMAKE_SOURCE_DIR}/libs")
+if (NOT OPENFST_LIB_DIR)
+  message(FATAL_ERROR "You need to specify Openfst directory. Set -DOPENFST_LIB_DIR option.")
+endif(NOT OPENFST_LIB_DIR)
+
+# set(KALDI_LIBRARIES_DIR "${CMAKE_SOURCE_DIR}/libs")
+# set(OPENFST_LIB_DIR "${CMAKE_SOURCE_DIR}/libs")
 
 ####################################################################################################
 #  Set compiler and linker flags
