@@ -7,7 +7,7 @@ package:
 
 source:
   git_url: https://github.com/{{ name }}/conda-package.git
-  git_rev: v0.0.3
+  git_rev: b7c82f077f4b2f5501794c10e84b08b9f9c3d7ca
 
 build:
   number: 0
@@ -20,19 +20,14 @@ requirements:
     - {{ compiler('cxx') }}
     - cmake
   host:
+    - python {{ python }}
     - numpy x.x
     - pip
-    - python 3.5*
     - zlib
     - setuptools
-
-test:
-  requires:
-    - pytest
-  imports:
-    - pykaldi
-  commands:
-    - python $SRC_DIR/pykaldi/setup.py test
+    - pytest-runner
+  run:
+    - python {{ python }}
 
 about:
   home: https://github.com/pykaldi/pykaldi
