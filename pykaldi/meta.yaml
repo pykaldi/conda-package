@@ -7,7 +7,7 @@ package:
 
 source:
   git_url: https://github.com/{{ name }}/conda-package.git
-  git_rev: v0.0.2
+  git_rev: v0.0.3
 
 build:
   number: 0
@@ -32,7 +32,7 @@ test:
   imports:
     - pykaldi
   commands:
-    - python setup.py test
+    - python $SRC_DIR/pykaldi/setup.py test
 
 about:
   home: https://github.com/pykaldi/pykaldi
