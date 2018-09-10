@@ -1,0 +1,37 @@
+{% set name = "kaldi" %}
+{% set version = "" %}
+{% set hash = "f503b94e5b78d2e03ad803b073f9664264aceb71" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  git_url: https://github.com/pykaldi/kaldi.git
+  git_rev: {{ hash }}
+
+build:
+  number: 0
+  skip: True #[win]
+  skip: True #[py<35]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - openblas 0.2.20|0.2.20*
+  host:
+    - zlib
+  run:
+    - {{ compiler('c') }}
+    - openblas 0.2.20|0.2.20.*
+
+about:
+  home: https://github.com/pykaldi/kaldi.git
+  license: Apache-2.0
+  summary: 'Kaldi Speech Recognition Toolkit'
+  description: |
+    Kaldi is intended for use by speech recognition researchers. It is a framework rather than a library.
+
+extra:
+  recipe-maintainers:
+    - vrmpx
