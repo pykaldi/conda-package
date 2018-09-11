@@ -39,16 +39,16 @@ $PYTHON setup.py install
 ##########################################################################
 
 # Create an rpath string from a list of all pykaldi sub-packages
-rpath="\$ORIGIN/.."
-find $SP_DIR/kaldi -maxdepth 1 -type d -exec basename {} \; | while read pkg; do
-	if [[ $pkg -ne "__pycache__" ]] && [[ $pkg -ne "kaldi" ]]; then
-		rpath=rpath":\$ORIGIN/../$pkg"
-	fi
-done
+# rpath="\$ORIGIN/.."
+# find $SP_DIR/kaldi -maxdepth 1 -type d -exec basename {} \; | while read pkg; do
+# 	if [[ $pkg -ne "__pycache__" ]] && [[ $pkg -ne "kaldi" ]]; then
+# 		rpath=rpath":\$ORIGIN/../$pkg"
+# 	fi
+# done
 
-# Update so files
-find $SP_DIR/kaldi -name "*.so" -type f | while read sofile; do
-	echo "Setting rpath of $sofile to \$ORIGIN, pykaldi rpath, kaldi/lib, conda/lib"
-	patchelf --set-rpath "$rpath:\$ORIGIN/../lib:\$ORIGIN/../../../.." $sofile
-done
+# # Update so files
+# find $SP_DIR/kaldi -name "*.so" -type f | while read sofile; do
+# 	echo "Setting rpath of $sofile to \$ORIGIN, pykaldi rpath, kaldi/lib, conda/lib"
+# 	patchelf --set-rpath "$rpath:\$ORIGIN/../lib:\$ORIGIN/../../../.." $sofile
+# done
 

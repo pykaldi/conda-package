@@ -9,6 +9,8 @@ package:
 source:
   git_url: https://github.com/pykaldi/pykaldi.git
   git_rev: {{ hash }}
+  patches:
+    - CMakeLists.patch # use new locations of the libs for kaldi and openfst
 
 build:
   number: 0
