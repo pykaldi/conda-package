@@ -3,54 +3,49 @@ export LDFLAGS="-L$PREFIX/lib"
 export CPATH=${PREFIX}/include
 export PYCLIF="/home/victor/miniconda3/bin/pyclif"
 export CLIF_MATCHER="/home/victor/miniconda3/clang/bin/clif-matcher"
-export LD_LIBRARY_PATH="/home/dogan/tools/protobuf/lib:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="/home/victor/miniconda3/lib/:${LD_LIBRARY_PATH}"
 
 # Install kaldi locally
 cd "$SRC_DIR/tools"
-./install_protobuf.sh
-./install_clif.sh
+#./install_protobuf.sh
+#./install_clif.sh
 ./install_kaldi.sh
 
 # Python command to install pykaldi
 cd "$SRC_DIR"
-python setup.py install --single-version-externally-managed --record=record.txt 
+$PYTHON setup.py install
 
-#####################################
-# Copy kaldi libs and update pykaldi
-#####################################
-mkdir -p $SP_DIR/lib
+##########################################################################
+# Update pykaldi RPATHs to include $ORIGIN, pykaldi, kaldi/lib, and conda lib
+##########################################################################
+# Create lib folder
+mkdir -p $SP_DIR/kaldi/lib
 
-# Kaldi libraries
-cp $SRC_DIR/tools/kaldi/lib/*.so $SP_DIR/lib
-
-# Openfst libraries
-cp $SRC_DIR/tools/kaldi/tools/openfst/lib/*.so $SP_DIR/lib
-
-# From: https://github.com/pytorch/builder/blob/master/conda/pytorch-0.4.1/build.sh
-# Update RPATHs with patched names
-# find $SP_DIR/kaldi -name "*.so*" | while read sofile; do
-# 	origname=${???}
-# 	patchedname=${???}
-# 	set +e
-# 	patchelf --print-needed $sofile | grep $origname 2>&1 >/dev/null
-# 	ERRCODE=$?
-# 	set -e
-# 	if [ "$ERRCODE" -eq "0" ]; then
-# 		echo "Patching $sofile entry $origname to $patchedname"
-# 		patchelf --replace-needed $origname $patchedname $sofile
-# 	fi
-# done
-
-# set RPATH of _C.so and similar to $ORIGIN, $ORIGIN/lib and conda/lib
-find $SP_DIR/kaldi -name "*.so*" -maxdepth 1 -type f | while read sofile; do
-	echo "Setting rpath of $sofile to " '$ORIGIN:$ORIGIN/lib:$ORIGIN/../../..'
-	patchelf --set-rpath '$ORIGIN:$ORIGIN/../lib:$ORIGIN/../../..' $sofile
-	patchelf --print-rpath $sofile
+# Create an rpath string from a list of all pykaldi sub-packages
+rpath="\$ORIGIN/.."
+find $SP_DIR/kaldi -maxdepth 1 -type d -exec basename {} \; | while read pkg; do
+	if [[ $pkg -ne "__pycache__" ]] && [[ $pkg -ne "kaldi" ]]; then
+		rpath=rpath":\$ORIGIN/../$pkg"
+	fi
 done
 
-# set RPATH of lib/ files to $ORIGIN and conda/lib
-find $SP_DIR/kaldi/lib -name "*.so*" -maxdepth 1 -type f | while read sofile; do
-	echo "Setting rpath of $sofile to " '$ORIGIN:$ORIGIN/../../../..'
+# Update so files
+find $SP_DIR/kaldi -name "*.so" -type f | while read sofile; do
+	echo "Setting rpath of $sofile to \$ORIGIN, pykaldi rpath, kaldi/lib, conda/lib"
+	patchelf --set-rpath "$rpath:\$ORIGIN/../lib:\$ORIGIN/../../../.." $sofile
+done
+
+#####################################
+# Update kaldi rpaths
+#####################################
+# Kaldi libraries
+cp $SRC_DIR/tools/kaldi/src/lib/*.so $SP_DIR/kaldi/lib
+
+# Openfst libraries (copy links and files)
+rsync --links $SRC_DIR/tools/kaldi/tools/openfst/lib/ $SP_DIR/kaldi/lib/
+
+# Update lib so files
+find $SP_DIR/kaldi/lib -maxdepth 1 -name "*.so" -type f | while read sofile; do
+	echo "Setting rpath of $sofile to \$ORIGIN, conda/lib"
 	patchelf --set-rpath '$ORIGIN:$ORIGIN/../../../..' $sofile
-	patchelf --print-rpath $sofile
 done
