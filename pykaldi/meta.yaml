@@ -23,23 +23,17 @@ requirements:
     - openblas 0.2.20|0.2.20*
     - cmake
     - ninja
+    - python {{ python }}
   host:
-    - python
+    - python {{ python }}
     - pip
     - numpy x.x
     - setuptools
     - pytest-runner
     - zlib
   run:
-    # - {{ compiler('c') }}
-    # - openblas 0.2.20|0.2.20.*
-    # - cmake
-    # - ninja
-    - python
-    # - pip
+    - python {{ python }}
     - numpy x.x
-    # - setuptools
-    # - pytest-runner
 
 about:
   home: https://github.com/pykaldi/pykaldi.git
