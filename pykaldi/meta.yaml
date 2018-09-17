@@ -11,7 +11,7 @@ source:
   git_rev: {{ hash }}
   patches:
     - CMakeLists.patch # use new locations of the libs for kaldi and openfst
-
+    - install_kaldi.patch # link against openblas
 build:
   number: 0
   skip: True #[win]
@@ -20,20 +20,19 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
-    - openblas 0.2.20|0.2.20*
     - cmake
     - ninja
-    - python {{ python }}
-  host:
-    - python {{ python }}
-    - pip
-    - numpy x.x
     - setuptools
+  host:
+    - openblas 0.2.20|0.2.20*
+    - python {{ python }}
     - pytest-runner
+    - numpy 1.11.*
     - zlib
   run:
+    - openblas 0.2.20|0.2.20*
     - python {{ python }}
-    - numpy x.x
+    - numpy >=1.11 
 
 about:
   home: https://github.com/pykaldi/pykaldi.git
