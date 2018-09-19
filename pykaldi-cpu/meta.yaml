@@ -1,4 +1,4 @@
-{% set name = "pykaldi" %}
+{% set name = "pykaldi-cpu" %}
 {% set version = "0.0.9" %}
 {% set hash = "a1ba52f487c0c6e6870fc2b6c7a4c3ac44ebb465" %}
 
