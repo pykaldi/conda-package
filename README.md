@@ -1,54 +1,30 @@
 Building the package
 ====================
 
-Easy way:
----------
-1. Download anaconda with python3 docker, and run a container
+1. Install conda-build and anaconda-client (for uploading)
+
 ```
-docker pull continuumio/anaconda3
-docker run -it continuumio/anaconda3
+conda install conda-build anaconda-client
 ```
 
-2. Install dependencies
+2. Clone this repository
+
+3. From the root of this repo, build each package with
+
 ```
-$ apt-get install git cmake make libatlas3-base
-$ conda install conda-build
+conda build pykaldi
 ```
 
-4. Get this repo
+or 
+
 ```
-$ git clone https://github.com/pykaldi/conda-package
+conda build pykaldi-cpu
 ```
 
-3. Build the package
-```
-$ cd conda-package
-$ conda-build pykaldi
-```
+4. (Opt) Upload it to anaconda.org
 
-Not so easy way
----------------
-1. Create a conda environment
 ```
-conda create -n pykaldipkg python=3.5
-conda activate pykaldipkg
-```
-
-2. Install conda-build
-```
-conda install conda-build
-```
-
-3. Build the package
-```
-conda-build pykaldi
-```
-
-On success, this will create a .tar.bz2 file in the environment folder (e.g., /home/victor/miniconda3/envs/pykaldipkg/conda-bld/linux-64/pykaldi-0.0.9-hf484d3e_0.tar.bz2). Take note of the location of this file.
-
-4. Install pykaldi conda package
-```
-conda install [tar.bz2 file]
+anaconda upload -u Pykaldi [output.bzip]
 ```
 
 5. (Opt) Test it
