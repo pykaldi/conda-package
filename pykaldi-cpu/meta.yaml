@@ -1,7 +1,7 @@
 {% set name = "pykaldi-cpu" %}
 {% set version = "0.0.9" %}
-{% set hash = "88478b5c3699ff164ed7bbcb16a6ae0d6b6d678b" %}
-
+{% set hash = "bb1916d1a622f330e14aabd398ae3c426dbeab0d" %}
+{% set number = 3 %}
 package:
   name: {{ name|lower }}
   version: {{ version }}
@@ -13,7 +13,7 @@ source:
     - CMakeLists.patch # use new locations of the libs for kaldi and openfst
     - install_kaldi.patch # link against openblas
 build:
-  number: 1
+  number: {{ number }}
   skip: True #[win]
 
 requirements:
