@@ -2,8 +2,8 @@ set -x
 export CFLAGS="-I$PREFIX/include"
 export LDFLAGS="-L$PREFIX/lib"
 export CPATH=${PREFIX}/include
-export PYCLIF="/home/victor/miniconda3/envs/pykaldi/bin/pyclif"
-export CLIF_MATCHER="/home/victor/miniconda3/envs/pykaldi/clang/bin/clif-matcher"
+export PYCLIF="/usr/local/bin/pyclif"
+export CLIF_MATCHER="/root/pykaldi/tools/clif_backend/build_matcher/bin/clif-matcher"
 
 # Create lib folder
 LIB_FOLDER="$SP_DIR/kaldi/lib"
