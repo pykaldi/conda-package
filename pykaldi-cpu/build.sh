@@ -36,6 +36,7 @@ done
 #########################################
 export PYTHON_LIBRARY=$($PYTHON find_python_library.py)
 export PYTHON_INC_DIR=$($PYTHON -c "import sysconfig; print(sysconfig.get_paths()['include'])" )
+export DEBUG=1
 
 ##########################################################################
 # install pykaldi
