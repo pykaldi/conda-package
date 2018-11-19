@@ -31,6 +31,12 @@ find $SP_DIR/kaldi/lib -maxdepth 1 -name "*.so*" -type f | while read sofile; do
 	patchelf --set-rpath '$ORIGIN:$ORIGIN/../../../..' $sofile
 done
 
+#########################################
+# Force CMake to find correct python
+#########################################
+export PYTHON_LIBRARY=$($PYTHON find_python_library.py)
+export PYTHON_INC_DIR="$CONDA_DEFAULT_ENV/include"
+
 ##########################################################################
 # install pykaldi
 ##########################################################################

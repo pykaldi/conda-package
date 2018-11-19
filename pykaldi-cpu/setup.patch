@@ -1,0 +1,11 @@
+36a37,38
+> PYTHON_LIBRARY = os.getenv('PYTHON_LIBRARY')
+> PYTHON_INC_DIR = os.getenv('PYTHON_INC_DIR')
+149a152,153
+>     print("PYTHON_LIB:", PYTHON_LIBRARY)
+>     print("PYTHON_INC_DIR:", PYTHON_INC_DIR)
+211a216,219
+> 
+>         if PYTHON_LIBRARY:
+>             CMAKE_ARGS +=['-DPYTHON_LIBRARY=' + PYTHON_LIBRARY,
+>                           '-DPYTHON_INCLUDE=' + PYTHON_INC_DIR]
