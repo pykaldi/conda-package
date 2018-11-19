@@ -26,6 +26,10 @@ RUN yum install -y autoconf \
     openssl \
     openssl-devel \
     patch \
+    gettext-devel \
+    perl-CPAN \
+    perl-devel \
+    curl-devel \
     && conda install conda-build ninja setuptools pip pyparsing numpy
 
 # Install gcc 5.4.0
@@ -54,6 +58,17 @@ RUN cd ~ \
     && make install \
     && rm -rf ~/cmake-3.6.2.tar.gz \
     && rm -rf ~/cmake-3.6.2
+
+# Install git
+RUN cd ~ \
+    && wget http://github.com/git/git/archive/v2.8.0.tar.gz \
+    && tar -zxvf v2.8.0.tar.gz \
+    && cd git-2.8.0 \
+    && make configure \
+    && ./configure --prefix=/usr/local \
+    && make install \
+    && rm -rf ~/v2.8.0.tar.gz \
+    && rm -rf ~/git-2.8.0
 
 # Install protobuf, clif
 RUN cd ~ \
