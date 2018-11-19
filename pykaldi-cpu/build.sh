@@ -35,7 +35,7 @@ done
 # Force CMake to find correct python
 #########################################
 export PYTHON_LIBRARY=$($PYTHON find_python_library.py)
-export PYTHON_INC_DIR="$CONDA_DEFAULT_ENV/include"
+export PYTHON_INC_DIR=$($PYTHON -c "import sysconfig; print(sysconfig.get_paths()['include'])" )
 
 ##########################################################################
 # install pykaldi

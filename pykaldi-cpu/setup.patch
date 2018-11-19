@@ -24,7 +24,7 @@
  
 +        if PYTHON_LIBRARY:
 +            CMAKE_ARGS +=['-DPYTHON_LIBRARY=' + PYTHON_LIBRARY,
-+                          '-DPYTHON_INCLUDE=' + PYTHON_INC_DIR]
++                          '-DPYTHON_INCLUDE_DIR=' + PYTHON_INC_DIR]
 +
          if CUDA:
              CMAKE_ARGS +=['-DCUDA_LD_FLAGS=' + CUDA_LD_FLAGS,
