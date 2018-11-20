@@ -80,3 +80,27 @@ RUN cd ~ \
 RUN cd ~ \
     && git clone https://github.com/pykaldi/conda-package.git
 
+###########################################
+# Install CUDA 9
+# From: https://gitlab.com/nvidia/cuda/tree/centos7/9.0
+###########################################
+RUN NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5 && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/7fa2af80.pub | sed '/^Version/d' > /etc/pki/rpm-gpg/RPM-GPG-KEY-NVIDIA && \
+    echo "$NVIDIA_GPGKEY_SUM  /etc/pki/rpm-gpg/RPM-GPG-KEY-NVIDIA" | sha256sum -c --strict -
+
+RUN curl https://gitlab.com/nvidia/cuda/raw/centos7/9.0/base/cuda.repo > /etc/yum.repos.d/cuda.repo
+
+ENV CUDA_VERSION 9.0.176
+ENV CUDA_PKG_VERSION 9-0-$CUDA_VERSION-1
+
+RUN yum install -y \
+        cuda-cudart-$CUDA_PKG_VERSION && \
+    ln -s cuda-9.0 /usr/local/cuda && \
+    rm -rf /var/cache/yum/*
+
+RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+
+ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
+
