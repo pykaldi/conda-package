@@ -1,7 +1,7 @@
 {% set name = "pykaldi" %}
 {% set version = "0.0.9" %}
-{% set hash = "f5c2b1e85bb47d1c6d35e6f8c7746c8e53d76b66" %}
-{% set number = 5 %}
+{% set hash = "7c6d21652aa6791cf146fa0a97e0a79967a5601d" %}
+{% set number = 6 %}
 
 package:
   name: {{ name|lower }}
