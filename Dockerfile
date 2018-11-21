@@ -110,3 +110,5 @@ RUN yum install -y \
     cuda-cublas-9-0-9.0.176.4-1 && \
     rm -rf /var/cache/yum/*
 
+COPY .condarc /root
+
