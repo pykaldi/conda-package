@@ -1,9 +1,10 @@
 set -x
+
 export CFLAGS="-I$PREFIX/include"
 export LDFLAGS="-L$PREFIX/lib"
 export CPATH=${PREFIX}/include
-export PYCLIF="/home/victor/miniconda3/envs/pykaldi/bin/pyclif"
-export CLIF_MATCHER="/home/victor/miniconda3/envs/pykaldi/clang/bin/clif-matcher"
+export PYCLIF="/usr/local/bin/pyclif"
+export CLIF_MATCHER="/root/pykaldi/tools/clif_backend/build_matcher/bin/clif-matcher"
 
 # Create lib folder
 LIB_FOLDER="$SP_DIR/kaldi/lib"
@@ -43,6 +44,14 @@ find $SP_DIR/kaldi/lib -maxdepth 1 -name "*.so*" -type f | while read sofile; do
 	echo "Setting rpath of $sofile to \$ORIGIN, conda/lib"
 	patchelf --set-rpath '$ORIGIN:$ORIGIN/../../../..' $sofile
 done
+
+
+#########################################
+# Force CMake to find correct python
+#########################################
+export PYTHON_LIBRARY=$($PYTHON find_python_library.py)
+export PYTHON_INC_DIR=$($PYTHON -c "import sysconfig; print(sysconfig.get_paths()['include'])" )
+export DEBUG=1
 
 ##########################################################################
 # install pykaldi
