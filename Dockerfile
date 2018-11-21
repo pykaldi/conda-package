@@ -30,7 +30,7 @@ RUN yum install -y autoconf \
     perl-CPAN \
     perl-devel \
     curl-devel \
-    && conda install conda-build ninja setuptools pip pyparsing numpy
+    && conda install conda-build anaconda-client ninja setuptools pip pyparsing numpy
 
 # Install gcc 5.4.0
 # RUN cd ~ \
@@ -103,4 +103,10 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 
 ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
+
+
+RUN yum install -y \
+    cuda-libraries-$CUDA_PKG_VERSION \
+    cuda-cublas-9-0-9.0.176.4-1 && \
+    rm -rf /var/cache/yum/*
 
