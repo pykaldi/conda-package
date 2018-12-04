@@ -77,8 +77,6 @@ RUN cd ~ \
     && ./install_protobuf.sh \
     && ./install_clif.sh
 
-RUN cd ~ \
-    && git clone https://github.com/pykaldi/conda-package.git
 
 ###########################################
 # Install CUDA 9
@@ -111,4 +109,11 @@ RUN yum install -y \
     rm -rf /var/cache/yum/*
 
 COPY .condarc /root
+
+RUN cd \
+    git clone https://github.com/pykaldi/conda-package.git
+
+ENTRYPOINT ["sh", "-c", "$HOME/conda-package/anaconda_upload.sh"]
+
+
 
