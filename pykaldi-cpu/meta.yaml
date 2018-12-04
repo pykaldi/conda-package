@@ -1,7 +1,7 @@
 {% set name = "pykaldi-cpu" %}
 {% set version = "0.0.9" %}
-{% set hash = "7c6d21652aa6791cf146fa0a97e0a79967a5601d" %}
-{% set number = 6 %}
+{% set hash = "5510ff91fe0c205652e545b32aa82eb6bc0b266f" %}
+{% set number = 7 %}
 package:
   name: {{ name|lower }}
   version: {{ version }}

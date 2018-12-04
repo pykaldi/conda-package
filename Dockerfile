@@ -110,7 +110,7 @@ RUN yum install -y \
 
 COPY .condarc /root
 
-RUN cd \
+RUN cd ~ \
     git clone https://github.com/pykaldi/conda-package.git
 
 ENTRYPOINT ["sh", "-c", "$HOME/conda-package/anaconda_upload.sh"]
