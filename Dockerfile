@@ -102,7 +102,6 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 
-
 RUN yum install -y \
     cuda-libraries-$CUDA_PKG_VERSION \
     cuda-cublas-9-0-9.0.176.4-1 && \
@@ -110,10 +109,13 @@ RUN yum install -y \
 
 COPY .condarc /root
 
+# Disable cache (via --build-arg CACHEBUST=$(date +%s))
+ARG CACHEBUST=1
+
 RUN cd ~ \
-    git clone https://github.com/pykaldi/conda-package.git
-
-ENTRYPOINT ["sh", "-c", "$HOME/conda-package/anaconda_upload.sh"]
+    && git clone https://github.com/pykaldi/conda-package.git
 
 
-
+WORKDIR "/root/conda-package"
+ENTRYPOINT ["bash", "anaconda_upload.sh"]
+CMD ["pykaldi"]
