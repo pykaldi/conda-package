@@ -1,30 +1,29 @@
-Building the package
-====================
+# Environment definition
 
-1. Install conda-build and anaconda-client (for uploading)
-
-```
-conda install conda-build anaconda-client
-```
-
-2. Clone this repository
-
-3. From the root of this repo, build each package with
+First, we build a docker image with CentOS 7 and all the dependencies needed to build the package:
 
 ```
-conda build pykaldi
+docker build --tag condapkg_centos7 --build-arg CACHEBUST=$(date +%s) .
 ```
 
-or 
+The build arg is used to force docker to download a new copy of this repo everytime we build the image. 
+
+# Building the conda package
+The entrypoint for this docker image is `anaconda_upload.sh`. This script takes as an argument the name of the folder we want to build for and upload to anaconda. For pykaldi:
 
 ```
-conda build pykaldi-cpu
+docker run -it --rm -e CONDA_UPLOAD_TOKEN='<TOKEN>' condapkg_centos7 pykaldi
 ```
 
-4. (Opt) Upload it to anaconda.org
-
+And for pykaldi-cpu
 ```
-anaconda upload -u Pykaldi [output.bzip]
+docker run -it --rm -e CONDA_UPLOAD_TOKEN='<TOKEN>' condapkg_centos7 pykaldi-cpu
 ```
 
-5. (Opt) Test it
+Token is the token obtained from anaconda.org
+
+## Debugging
+To debug the process, we can bypass the docker entrypoint as 
+```
+docker run -it --rm -e CONDA_UPLOAD_TOKEN='<TOKEN>' --entrypoint bash condapkg_centos7
+```
