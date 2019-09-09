@@ -3,35 +3,36 @@
 
 FROM conda/miniconda3-centos7
 
-RUN yum install -y autoconf \
+RUN yum install -y atlas-devel \
+    autoconf \
     automake \
+    bzip2 \
     curl \
+    curl-devel \
     git \
     gcc \
     gcc-c++ \
+    gettext-devel \
+    gmp-devel \
     graphviz \
-    atlas-devel \
+    libmpc-devel \
     libtool \
     make \
-    pkgconfig \
-    subversion \
-    unzip \
-    wget \
-    zlib-devel \
-    sox \
-    vim \
-    gmp-devel \
     mpfr-devel \
-    libmpc-devel \
-    bzip2 \
-    openssl \
-    openssl-devel \
+    #    openssl \
+    #    openssl-devel \
+    ncurses-devel \
     patch \
-    gettext-devel \
     perl-CPAN \
     perl-devel \
-    curl-devel \
-    && conda install conda-build anaconda-client ninja setuptools pip pyparsing numpy
+    pkgconfig \
+    sox \
+    subversion \
+    unzip \
+    vim \
+    wget \
+    zlib-devel \
+    && conda install conda-build anaconda-client ninja setuptools pip pyparsing numpy cmake git
 
 # Install gcc 5.4.0
 # RUN cd ~ \
@@ -50,26 +51,26 @@ RUN yum install -y autoconf \
 # ENV PATH="/usr/local/bin:${PATH}"
 
 # Install cmake3
-RUN cd ~ \
-    && wget https://cmake.org/files/v3.6/cmake-3.6.2.tar.gz \
-    && tar -zxvf cmake-3.6.2.tar.gz \
-    && cd cmake-3.6.2 \
-    && ./bootstrap --prefix=/usr/local \
-    && make \
-    && make install \
-    && rm -rf ~/cmake-3.6.2.tar.gz \
-    && rm -rf ~/cmake-3.6.2
+#RUN cd ~ \
+#    && wget https://cmake.org/files/v3.6/cmake-3.6.2.tar.gz \
+#    && tar -zxvf cmake-3.6.2.tar.gz \
+#    && cd cmake-3.6.2 \
+#    && ./bootstrap --prefix=/usr/local \
+#    && make \
+#    && make install \
+#    && rm -rf ~/cmake-3.6.2.tar.gz \
+#    && rm -rf ~/cmake-3.6.2
 
 # Install git
-RUN cd ~ \
-    && wget http://github.com/git/git/archive/v2.8.0.tar.gz \
-    && tar -zxvf v2.8.0.tar.gz \
-    && cd git-2.8.0 \
-    && make configure \
-    && ./configure --prefix=/usr/local \
-    && make install \
-    && rm -rf ~/v2.8.0.tar.gz \
-    && rm -rf ~/git-2.8.0
+#RUN cd ~ \
+#    && wget http://github.com/git/git/archive/v2.8.0.tar.gz \
+#    && tar -zxvf v2.8.0.tar.gz \
+#    && cd git-2.8.0 \
+#    && make configure \
+#    && ./configure --prefix=/usr/local \
+#    && make install \
+#    && rm -rf ~/v2.8.0.tar.gz \
+#    && rm -rf ~/git-2.8.0
 
 # Install protobuf, clif
 RUN cd ~ \
@@ -87,7 +88,7 @@ RUN NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efac
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/7fa2af80.pub | sed '/^Version/d' > /etc/pki/rpm-gpg/RPM-GPG-KEY-NVIDIA && \
     echo "$NVIDIA_GPGKEY_SUM  /etc/pki/rpm-gpg/RPM-GPG-KEY-NVIDIA" | sha256sum -c --strict -
 
-RUN curl https://gitlab.com/nvidia/cuda/raw/centos7/9.0/base/cuda.repo > /etc/yum.repos.d/cuda.repo
+RUN curl https://gitlab.com/nvidia/container-images/cuda/raw/centos7/9.0/base/cuda.repo > /etc/yum.repos.d/cuda.repo
 
 ENV CUDA_VERSION 9.0.176
 ENV CUDA_PKG_VERSION 9-0-$CUDA_VERSION-1
